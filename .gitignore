@@ -7,7 +7,7 @@
 
 # misc
 .coverage
-.vscode
+# .vscode
 coverage.xml
 
 # files potentially containing personal credentials or data
