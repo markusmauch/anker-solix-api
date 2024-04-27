@@ -82,11 +82,12 @@ def on_disconnect(client, userdata, flags, reason_code, properties):
         reconnect_count += 1
     logging.info("Reconnect failed after %s attempts. Exiting...", reconnect_count)
 
-def announce_sensor( client: mqtt.Client, topic: str, name: str, unique_id: str, state_topic: str, value_template: str, device_class = None, unit_of_measurement = None, json_attributes_topic = None ):
+def announce_sensor( client: mqtt.Client, topic: str, name: str, unique_id: str, state_topic: str, value_template: str, device_class = None, state_class = None, unit_of_measurement = None, json_attributes_topic = None ):
     msg = {
         "name": name,
         "state_topic": state_topic,
         "value_template": value_template,
+        "state_class": state_class,
         "unique_id": unique_id
     }
     if device_class != None: msg["device_class"] = device_class
@@ -124,6 +125,7 @@ def announce_sensors_for_site(client: mqtt.Client, site_name: str):
         f"{S2M_MQTT_TOPIC}/{site_name}/scene_info",
         "{{ value_json.solarbank_info.total_photovoltaic_power | float }}",
         "power",
+        "measurement",
         "W"
     )
 
@@ -136,6 +138,7 @@ def announce_sensors_for_site(client: mqtt.Client, site_name: str):
         f"{S2M_MQTT_TOPIC}/{site_name}/scene_info",
         "{{ value_json.statistics[0].total | float }}",
         "energy",
+        "measurement",
         "kWh"
     )
 
@@ -148,6 +151,7 @@ def announce_sensors_for_site(client: mqtt.Client, site_name: str):
         f"{S2M_MQTT_TOPIC}/{site_name}/scene_info",
         "{{ value_json.solarbank_info.total_output_power | float }}",
         "power",
+        "measurement",
         "W"
     )
 
@@ -217,6 +221,7 @@ def announce_sensors_for_site(client: mqtt.Client, site_name: str):
         "{{value_json.ranges|length}}",
         None,
         None,
+        None,
         f"{S2M_MQTT_TOPIC}/{site_name}/schedule"
     )
 
@@ -228,6 +233,7 @@ def announce_sensors_for_site(client: mqtt.Client, site_name: str):
         f"solarbank_e1600_{site_name}_site_homepage",
         f"{S2M_MQTT_TOPIC}/{site_name}",
         "{{value_json.friendly_name}}",
+        None,
         None,
         None,
         f"{S2M_MQTT_TOPIC}/{site_name}"
